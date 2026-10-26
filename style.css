@@ -1,0 +1,629 @@
+/* L'Astrée with Glow — feuille de style du site.
+   Habillage « La nuit, puis le Carnet » (mélange F, choisi par Audrey le 22 octobre 2026) :
+   une ouverture de nuit avec une image du jeu, puis un carnet de papier — logo en Lavishly Yours
+   (la police du jeu), titres en Lora, mots à la main en Caveat, texte en Nunito.
+   L'ancien habillage (nuit violette et lucioles) est gardé dans « Ancien habillage nuit lucioles/ ».
+   Les polices sont servies par le site lui-même (aucun appel à Google). */
+
+@font-face { font-family: "Lavishly Yours"; src: url("polices/LavishlyYours.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Lora"; src: url("polices/Lora.woff2") format("woff2"); font-style: normal; font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Lora"; src: url("polices/Lora-Italique.woff2") format("woff2"); font-style: italic; font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Caveat"; src: url("polices/Caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Nunito"; src: url("polices/Nunito.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
+
+:root {
+  /* le papier */
+  --papier: #f6efe3;
+  --carte: #fffdf8;
+  --encre: #3b2f4a;
+  --encre-doux: #6e6280;
+  --gris: #9a8fae;
+  --bord: 1px solid rgba(59, 47, 74, 0.10);
+  --ombre: 0 16px 36px -24px rgba(59, 47, 74, 0.45);
+  /* la nuit */
+  --nuit: #0e0c16;
+  --nuit-texte: #f6f1e8;
+  --nuit-doux: rgba(255, 255, 255, 0.75);
+  /* les couleurs de L'Astrée */
+  --lilas: #7f63c4;
+  --lilas-pale: #e6dcf5;
+  --or: #c99a3c;
+  --or-vif: #f2c66a;
+  --or-pale: #f3e3bd;
+  --vert: #5f9a74;
+  --vert-pale: #e0ebe1;
+  --rose: #d98b94;
+  --turquoise: #4fb8a8;
+  --peche: #e8905a;
+  /* les polices */
+  --logo: "Lavishly Yours", cursive;
+  --titres: "Lora", Georgia, serif;
+  --main: "Caveat", cursive;
+  --texte-police: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* les couleurs des émotions dans le jeu (EmotionManager) */
+  --joie: #f7b500;
+  --calme: #a8d5a2;
+  --tristesse: #3481b8;
+  --colere: #c1121c;
+  --peur: #8f4e35;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--texte-police);
+  font-size: 17.5px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+/* le grain du papier */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection { background: rgba(127, 99, 196, 0.25); }
+a { color: inherit; }
+img, video { max-width: 100%; height: auto; display: block; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--lilas); outline-offset: 3px; border-radius: 8px; }
+.ciel, .lucioles { display: none; }
+
+@keyframes apparaitre { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes respirer { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+.apparait { animation: apparaitre 0.9s ease both; }
+@supports (animation-timeline: view()) {
+  .apparait { animation-timeline: view(); animation-range: entry 0% cover 30%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; }
+  .glow-video { display: none; }
+  .glow-affiche { display: block !important; }
+}
+
+/* ---------- Les petits mots communs ---------- */
+.surtitre { font-family: var(--main); font-weight: 500; font-size: 27px; line-height: 1.2; color: var(--or); margin: 0 0 8px; }
+h1, h2, h3 { font-family: var(--titres); font-weight: 500; line-height: 1.15; margin: 0; }
+h2 { font-size: clamp(32px, 4.4vw, 50px); }
+h3 { font-size: 21px; font-weight: 600; }
+.intro { max-width: 720px; margin: 16px auto 0; color: var(--encre-doux); font-size: 18px; line-height: 1.7; }
+.entete-section { text-align: center; max-width: 780px; margin: 0 auto 46px; }
+.entete-section.serre { margin-bottom: 38px; }
+.mention-a-venir { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 2px 10px; border-radius: 999px; font-family: var(--main); font-size: 17px; color: var(--encre-doux); background: var(--or-pale); }
+
+/* ---------- Les boutons ---------- */
+.bouton { display: inline-flex; align-items: center; gap: 6px; padding: 13px 26px; border-radius: 999px; font-weight: 800; font-size: 16.5px; text-decoration: none; transition: transform 0.15s, background 0.2s; }
+.bouton:hover { transform: translateY(-2px); }
+.bouton .petit { font-weight: 600; opacity: 0.85; }
+.bouton.plein { background: var(--lilas); color: #fff; box-shadow: 0 10px 24px -12px rgba(127, 99, 196, 0.8); }
+.bouton.contour { background: #fff; color: var(--lilas); border: 2px solid var(--lilas); }
+.bouton.or { background: var(--or-vif); color: #2a2008; box-shadow: 0 0 30px -4px rgba(242, 198, 106, 0.8); }
+.bouton.blanc { background: transparent; color: #fff; border: 2px solid rgba(255, 255, 255, 0.6); }
+.bouton.blanc:hover { border-color: #fff; }
+.boutons { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+/* ---------- Le menu ---------- */
+.menu-haut {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px 24px;
+  padding: 14px 38px;
+  background: linear-gradient(180deg, rgba(14, 12, 22, 0.85), rgba(14, 12, 22, 0));
+  transition: background 0.3s;
+}
+.menu-haut.pose { background: rgba(14, 12, 22, 0.94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.marque { display: flex; align-items: baseline; gap: 10px; text-decoration: none; flex: none; }
+.marque .point { display: none; }
+.marque .nom { font-family: var(--logo); font-size: 36px; line-height: 1; color: #fff; text-shadow: 0 0 18px rgba(242, 198, 106, 0.45); }
+.marque .avec { font-family: var(--main); font-size: 19px; color: var(--or-vif); }
+.liens { display: flex; align-items: center; gap: 22px; margin: 0; padding: 0; list-style: none; }
+.liens a { font-size: 15px; font-weight: 700; color: rgba(255, 255, 255, 0.8); text-decoration: none; white-space: nowrap; transition: color 0.2s; }
+.liens a:hover, .liens a[aria-current="page"] { color: #fff; }
+.appel-menu { flex: none; display: inline-flex; align-items: center; padding: 9px 18px; border-radius: 999px; font-size: 15px; font-weight: 800; text-decoration: none; color: #2a2008; background: var(--or-vif); box-shadow: 0 0 24px -4px rgba(242, 198, 106, 0.7); }
+.appel-menu:hover { filter: brightness(1.06); }
+
+@media (max-width: 1299px) {
+  .menu-haut { flex-wrap: wrap; padding: 10px 18px 0; background: rgba(14, 12, 22, 0.94); }
+  .menu-haut > nav { order: 3; flex: 1 0 100%; min-width: 0; margin: 0 -18px; }
+  .liens { width: 100%; padding: 8px 18px 10px; overflow-x: auto; gap: 20px; scrollbar-width: none; }
+  .liens::-webkit-scrollbar { display: none; }
+  html { scroll-padding-top: 116px; }
+}
+@media (max-width: 420px) {
+  .marque .avec { display: none; }
+  .marque .nom { font-size: 30px; }
+  .appel-menu { padding: 8px 13px; font-size: 13px; }
+}
+
+/* ---------- La nuit : l'ouverture de l'accueil ---------- */
+.nuit {
+  position: relative; z-index: 1; overflow: hidden;
+  min-height: clamp(640px, 100vh, 860px); display: grid; align-items: end;
+  background: var(--nuit); color: var(--nuit-texte);
+}
+.nuit .fond { position: absolute; inset: 0; background: #0e0c16 url("images/jeu-nuit-halloween-ouverture.webp") 25% 62% / cover no-repeat; }
+.nuit .voile { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 12, 22, 0.35) 0%, rgba(14, 12, 22, 0.05) 35%, rgba(14, 12, 22, 0.78) 72%, rgba(14, 12, 22, 0.96) 100%); }
+.nuit .contenu { position: relative; max-width: 1160px; margin: 0 auto; padding: 150px 24px 84px; width: 100%; }
+.nuit .surtitre { color: var(--or-vif); }
+.nuit h1 { font-family: var(--logo); font-weight: 400; font-size: clamp(96px, 14vw, 190px); line-height: 0.9; margin-left: -8px; color: #fff; text-shadow: 0 0 50px rgba(242, 198, 106, 0.5); }
+.nuit .avec-glow { font-family: var(--main); font-size: 34px; color: var(--or-vif); margin: 0 0 26px 50px; }
+.nuit .accroche { font-family: var(--titres); max-width: 560px; font-size: clamp(21px, 2.4vw, 25px); line-height: 1.4; margin: 0 0 10px; }
+.nuit .sous-titre { color: var(--nuit-doux); max-width: 520px; margin: 0 0 30px; font-size: 16.5px; }
+.nuit .etat { flex-basis: 100%; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: rgba(255, 255, 255, 0.85); margin-top: 6px; }
+.nuit .etat i { width: 9px; height: 9px; border-radius: 50%; background: var(--or-vif); box-shadow: 0 0 12px var(--or-vif); flex: none; }
+.nuit .legende-nuit { position: absolute; right: 24px; bottom: 54px; margin: 0; font-family: var(--main); font-size: 18px; color: rgba(255, 255, 255, 0.55); }
+.nuit .dechirure { position: absolute; left: 0; right: 0; bottom: -2px; height: 42px; background: var(--papier); clip-path: polygon(0 60%, 4% 35%, 9% 70%, 15% 30%, 21% 65%, 27% 40%, 33% 72%, 39% 38%, 46% 66%, 52% 30%, 58% 68%, 64% 42%, 70% 70%, 76% 34%, 82% 64%, 88% 36%, 94% 68%, 100% 40%, 100% 100%, 0 100%); }
+@media (max-width: 640px) {
+  .nuit .contenu { padding: 130px 16px 70px; }
+  .nuit .avec-glow { margin-left: 24px; font-size: 28px; }
+  .nuit .legende-nuit { display: none; }
+  .nuit .etat { margin-left: 0; }
+}
+
+/* ---------- Les sections du carnet ---------- */
+main { position: relative; z-index: 2; max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { main { padding: 0 16px; } }
+.section { padding: 80px 0 90px; }
+@media (max-width: 640px) { .section { padding: 56px 0 60px; } }
+
+/* Le concept : une page de cahier */
+.concept {
+  position: relative; max-width: 980px; margin: 0 auto;
+  background: var(--carte); border: var(--bord); border-radius: 14px; box-shadow: var(--ombre);
+  padding: 56px 70px 56px 92px;
+}
+.concept::before { content: ""; position: absolute; left: 58px; top: 0; bottom: 0; width: 1px; background: rgba(217, 139, 148, 0.55); }
+.concept::after { content: "à chaque âge de la vie ♥"; position: absolute; right: 30px; top: 30px; font-family: var(--main); font-size: 22px; color: var(--rose); }
+.concept h2 { font-size: clamp(30px, 4vw, 46px); }
+.concept .p1, .concept .p2 { max-width: none; margin: 22px 0 0; font-size: 18px; line-height: 38px; background-image: repeating-linear-gradient(180deg, transparent 0 37px, rgba(127, 99, 196, 0.16) 37px 38px); background-position: 0 -9px; }
+.concept .p2 { color: var(--encre-doux); margin: 0; padding-top: 38px; }
+@media (max-width: 640px) { .concept { padding: 36px 20px 36px 60px; } .concept::after { display: none; } .concept .p1, .concept .p2 { line-height: 1.7; } }
+
+/* Glow */
+.deux-colonnes { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 60px; align-items: center; }
+@media (max-width: 819px) { .deux-colonnes { grid-template-columns: 1fr; gap: 36px; } }
+.orbe { position: relative; width: min(340px, 78vw); aspect-ratio: 1 / 1; margin: 0 auto; }
+.orbe .halo { position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(circle, rgba(242, 198, 106, 0.35), transparent 70%); animation: respirer 5s ease-in-out infinite; }
+.orbe .rond { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #0b1020; border: 10px solid #fff; box-shadow: var(--ombre); }
+.orbe video, .orbe img { width: 100%; height: 100%; object-fit: cover; }
+.glow-affiche { display: none; }
+.orbe .eclat { display: none; }
+.texte-glow h2 { margin-bottom: 16px; }
+.texte-glow .p1 { font-size: 18.5px; line-height: 1.7; margin: 0 0 16px; }
+.citation { font-family: var(--main); font-size: 30px; line-height: 1.3; color: var(--lilas); margin: 0; }
+
+/* Les âges : des cartes droites */
+.ages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+@media (max-width: 999px) { .ages { grid-template-columns: repeat(2, 1fr); } }
+.age { display: flex; flex-direction: column; background: var(--carte); border: var(--bord); border-radius: 16px; overflow: hidden; box-shadow: var(--ombre); transition: transform 0.2s; }
+.age:hover { transform: translateY(-5px); }
+.age figure { margin: 0; position: relative; aspect-ratio: 4 / 3.2; overflow: hidden; display: grid; place-items: center; background: var(--lilas-pale); }
+.age figure img { width: 100%; height: 100%; object-fit: cover; }
+.age figure.en-preparation span { font-family: var(--main); font-size: 24px; color: var(--lilas); }
+.age figcaption { position: absolute; right: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px; font-family: var(--main); font-size: 16px; color: var(--encre-doux); background: rgba(255, 253, 248, 0.9); }
+.age .corps { padding: 16px 20px 20px; }
+.age .nom { font-family: var(--titres); font-weight: 600; font-size: 22px; }
+.age .tranche { font-family: var(--main); font-size: 21px; color: var(--or); }
+.age p { margin: 6px 0 0; font-size: 15.5px; line-height: 1.5; color: var(--encre-doux); }
+.statut { display: block; font-family: var(--main); font-size: 19px; color: var(--vert); }
+.statut.a-venir { color: var(--gris); }
+@media (max-width: 559px) {
+  .ages { grid-template-columns: 1fr; gap: 14px; }
+  .age { flex-direction: row; align-items: flex-start; }
+  .age figure { flex: none; width: 124px; aspect-ratio: 4 / 3.4; margin: 12px 0 12px 12px; border-radius: 10px; }
+  .age figcaption { display: none; }
+  .age .corps { padding: 12px 16px 14px; }
+}
+
+/* Aujourd'hui : les histoires */
+.histoires { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 899px) { .histoires { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; } }
+.histoire { background: var(--carte); border: var(--bord); border-radius: 16px; overflow: hidden; box-shadow: var(--ombre); }
+.histoire figure { margin: 0; position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
+.histoire figure img { width: 100%; height: 100%; object-fit: cover; }
+.histoire figcaption { position: absolute; right: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px; font-family: var(--main); font-size: 16px; color: var(--encre-doux); background: rgba(255, 253, 248, 0.9); }
+.histoire .corps { padding: 16px 20px 20px; }
+.histoire h3 { display: flex; align-items: center; gap: 10px; font-size: 22px; }
+.histoire p { margin: 6px 0 0; font-size: 15.5px; line-height: 1.5; color: var(--encre-doux); }
+.puce-emotion { flex: none; width: 14px; height: 14px; border-radius: 50%; }
+.puce-emotion.tristesse { background: var(--tristesse); }
+.puce-emotion.colere { background: var(--colere); }
+.puce-emotion.peur { background: var(--peur); }
+.badges { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin: 44px 0 0; padding: 0; list-style: none; }
+.badges img { width: 104px; background: #fff; border-radius: 50%; padding: 6px; box-shadow: var(--ombre); }
+@media (max-width: 640px) { .badges img { width: 78px; } }
+.legende-badges { text-align: center; font-family: var(--main); font-size: 23px; color: var(--encre-doux); margin: 16px 0 0; }
+
+/* Dans le jeu : une bande de nuit */
+.nuit-bande { position: relative; background: var(--nuit); color: var(--nuit-texte); margin: 40px calc(50% - 50vw) 0; padding: 80px 24px 90px; }
+.nuit-bande .dedans { max-width: 1112px; margin: 0 auto; }
+.nuit-bande .surtitre { color: var(--or-vif); }
+.nuit-bande h2 { color: #fff; }
+.nuit-bande .intro { color: var(--nuit-doux); }
+.galerie { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 819px) { .galerie { grid-template-columns: 1fr; } }
+.galerie figure { margin: 0; position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.8); }
+.galerie img { width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
+.galerie figcaption { position: absolute; left: 14px; bottom: 12px; font-family: var(--main); font-size: 22px; color: #fff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); }
+
+/* Les émotions : les palettes */
+.palettes { display: flex; flex-direction: column; gap: 20px; }
+.palette { background: var(--carte); border: var(--bord); border-radius: 16px; box-shadow: var(--ombre); padding: 28px 32px; }
+@media (max-width: 640px) { .palette { padding: 22px 20px; } }
+.palette .haut { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.palette .nom { font-family: var(--titres); font-weight: 600; font-size: 24px; }
+.palette .tranche { font-family: var(--main); font-size: 21px; color: var(--or); }
+.palette .sous { font-size: 15.5px; color: var(--encre-doux); }
+.puces { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.puces li { display: inline-flex; align-items: center; gap: 9px; padding: 8px 15px; border-radius: 999px; font-weight: 700; font-size: 15px; background: var(--papier); border: var(--bord); }
+.puces li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--couleur, var(--lilas)); }
+.e-joie { --couleur: #f7b500; } .e-calme { --couleur: #a8d5a2; } .e-tristesse { --couleur: #3481b8; }
+.e-colere { --couleur: #c1121c; } .e-peur { --couleur: #8f4e35; } .e-anxiete { --couleur: #8e7cc3; }
+.e-honte { --couleur: #d98b94; } .e-stress { --couleur: #e8905a; } .e-degout { --couleur: #7a9a4b; }
+.e-fatigue { --couleur: #8d8aa3; } .e-sais-pas { --couleur: #c9c2d6; }
+.notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 26px; }
+@media (max-width: 899px) { .notes { grid-template-columns: 1fr; } }
+.note { padding: 22px 24px; border-radius: 16px; background: var(--carte); border: var(--bord); box-shadow: var(--ombre); }
+.note h3 { margin: 0 0 6px; font-size: 21px; color: var(--lilas); }
+.note p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--encre-doux); }
+
+/* La météo */
+.icones-meteo { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 0 0 30px; padding: 0; list-style: none; }
+.icones-meteo li { width: 116px; text-align: center; font-family: var(--main); font-size: 21px; color: var(--encre-doux); background: #fff; border-radius: 16px; padding: 12px 8px 6px; border: var(--bord); }
+.icones-meteo img { width: 64px; margin: 0 auto 2px; }
+@media (max-width: 640px) { .icones-meteo li { width: 86px; } .icones-meteo img { width: 48px; } }
+.meteos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 899px) { .meteos { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 559px) { .meteos { grid-template-columns: 1fr; } }
+.meteos figure { margin: 0; position: relative; background: #fff; padding: 10px 10px 40px; border-radius: 12px; box-shadow: var(--ombre); }
+.meteos figure > img { border-radius: 6px; aspect-ratio: 16 / 8; object-fit: cover; width: 100%; }
+.meteos figcaption { position: absolute; bottom: 6px; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--main); font-size: 21px; color: var(--encre-doux); }
+.meteos figcaption img { width: 28px; }
+
+/* La boucle : six cartes (le cercle de l'ancien habillage n'est plus dessiné) */
+.cercle { position: relative; }
+.cercle .anneau, .cercle .coeur { display: none; }
+.boucle { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 899px) { .boucle { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 559px) { .boucle { grid-template-columns: 1fr; gap: 14px; } }
+.boucle li { background: var(--carte); border: var(--bord); border-radius: 16px; padding: 24px 22px; box-shadow: var(--ombre); }
+.boucle .numero { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--lilas); display: grid; place-items: center; font-family: var(--main); font-size: 26px; color: var(--lilas); background: #fff; margin-bottom: 12px; }
+.boucle h3 { margin: 0 0 4px; font-size: 21px; }
+.boucle p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--encre-doux); }
+
+/* L'îlot */
+.ilot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 899px) { .ilot { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 559px) { .ilot { grid-template-columns: 1fr; gap: 14px; } }
+.element { display: flex; gap: 16px; padding: 24px 22px; border-radius: 16px; background: var(--carte); border: var(--bord); box-shadow: var(--ombre); }
+.losange { flex: none; width: 14px; height: 14px; margin-top: 7px; border-radius: 4px; transform: rotate(45deg); background: var(--c); }
+.element h3 { margin: 0 0 5px; font-size: 21px; }
+.element p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--encre-doux); }
+.c-turquoise { --c: #4fb8a8; } .c-lilas { --c: #7f63c4; } .c-peche { --c: #e8905a; } .c-or { --c: #c99a3c; }
+
+/* Les familles */
+.familles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 899px) { .familles { grid-template-columns: 1fr; } }
+.famille { display: flex; gap: 16px; padding: 26px; border-radius: 16px; background: var(--carte); border: var(--bord); box-shadow: var(--ombre); }
+.famille .rond-couleur { flex: none; width: 14px; height: 14px; margin-top: 8px; border-radius: 50%; background: var(--c); }
+.famille h3 { margin: 0 0 8px; font-size: 22px; }
+.famille p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--encre-doux); }
+.famille a { color: var(--lilas); font-weight: 700; }
+
+/* Derrière L'Astrée */
+.derriere { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 60px; align-items: center; }
+@media (max-width: 819px) { .derriere { grid-template-columns: 1fr; gap: 36px; } }
+.derriere .portrait { max-width: 380px; margin: 0 auto; background: #fff; padding: 12px 12px 14px; box-shadow: var(--ombre); transform: rotate(-2deg); }
+.derriere .portrait img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+.derriere h2 { margin-bottom: 20px; }
+.derriere .p1 { font-size: 18.5px; line-height: 1.7; margin: 0 0 16px; }
+.derriere .p2 { font-size: 17px; line-height: 1.7; color: var(--encre-doux); margin: 0 0 24px; }
+.signature { font-family: var(--main); font-size: 30px; color: var(--lilas); margin: 0; }
+
+/* ---------- Le pied : la nuit revient ---------- */
+.pied { position: relative; z-index: 2; margin-top: 50px; background: var(--nuit); color: var(--nuit-texte); }
+.pied .dedans { max-width: 1160px; margin: 0 auto; padding: 80px 24px 36px; }
+@media (max-width: 640px) { .pied .dedans { padding: 56px 16px 28px; } }
+.contact { text-align: center; max-width: 620px; margin: 0 auto; }
+.contact .bulle { display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 42% 38%, #fff6d6, var(--or-vif) 55%, rgba(242, 198, 106, 0.2)); box-shadow: 0 0 36px 6px rgba(242, 198, 106, 0.5); margin-bottom: 20px; }
+.contact h2 { margin: 0 0 14px; color: #fff; }
+.contact p { margin: 0 0 26px; font-size: 17px; line-height: 1.7; color: var(--nuit-doux); }
+.contact .boutons { justify-content: center; }
+.contact .bouton.plein { background: var(--or-vif); color: #2a2008; box-shadow: 0 0 30px -4px rgba(242, 198, 106, 0.8); }
+.contact .bouton.contour { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+.mentions { max-width: 760px; margin: 60px auto 0; border-top: 1px solid rgba(242, 198, 106, 0.18); border-bottom: 1px solid rgba(242, 198, 106, 0.18); }
+.mentions summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 18px 4px; font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--nuit-doux); }
+.mentions summary::-webkit-details-marker { display: none; }
+.mentions summary .plus { color: var(--or-vif); font-size: 20px; transition: transform 0.2s; }
+.mentions[open] summary .plus { transform: rotate(45deg); }
+.mentions .contenu { padding: 4px 4px 26px; }
+.mentions h3 { margin: 0 0 5px; font-family: var(--texte-police); font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--or-vif); }
+.mentions p { margin: 0 0 16px; font-size: 14.5px; line-height: 1.65; color: var(--nuit-doux); }
+.mentions a { color: #fff; }
+.bas-de-page { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin-top: 40px; padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+.bas-de-page .nom { font-family: var(--logo); font-size: 26px; color: #fff; }
+.bas-de-page .nom span { font-family: var(--main); font-size: 17px; color: var(--or-vif); margin-left: 6px; }
+.bas-de-page ul { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.bas-de-page a { color: var(--nuit-doux); }
+.bas-de-page a:hover { color: #fff; }
+.bas-de-page .droits { font-size: 13.5px; color: rgba(255, 255, 255, 0.45); }
+
+/* ---------- Les pages intérieures : parents, confidentialité ---------- */
+body.interne { background: linear-gradient(180deg, var(--nuit) 0, var(--nuit) 420px, var(--papier) 420px); }
+body.interne .menu-haut { background: rgba(14, 12, 22, 0.94); }
+.page { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; padding: 150px 24px 40px; }
+@media (max-width: 1299px) { .page { padding-top: 150px; } }
+@media (max-width: 640px) { .page { padding: 136px 16px 24px; } }
+.page-tete { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; margin-bottom: 36px; color: var(--nuit-texte); min-height: 190px; }
+.page-tete.seul { grid-template-columns: 1fr; text-align: center; }
+@media (max-width: 559px) { .page-tete { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 18px; } }
+.page-tete .vignette { width: clamp(110px, 22vw, 150px); aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; border: 8px solid #fff; box-shadow: 0 0 50px -6px rgba(242, 198, 106, 0.7); }
+.page-tete .vignette img { width: 100%; height: 100%; object-fit: cover; }
+.page-tete .surtitre { color: var(--or-vif); }
+.page-tete h1 { font-size: clamp(36px, 5vw, 56px); color: #fff; }
+.page-tete .intro, .page-tete .maj { color: var(--nuit-doux); margin: 10px 0 0; }
+.page-tete .maj { font-size: 14.5px; }
+.bloc { position: relative; margin: 0 0 20px; padding: 28px 32px; border-radius: 16px; background: var(--carte); border: var(--bord); box-shadow: var(--ombre); --c: var(--lilas); }
+@media (max-width: 640px) { .bloc { padding: 22px 18px; } }
+.bloc h2 { display: flex; align-items: center; gap: 12px; font-size: clamp(22px, 3vw, 28px); margin: 0 0 14px; }
+.bloc .rond-couleur { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.bloc p { margin: 0 0 12px; font-size: 16.5px; line-height: 1.7; }
+.bloc p:last-child { margin-bottom: 0; }
+.bloc a { color: var(--lilas); font-weight: 700; }
+.bloc .doux { color: var(--encre-doux); font-family: var(--main); font-size: 21px; }
+.pas, .liste { margin: 0; padding: 0 0 0 26px; font-size: 16.5px; line-height: 1.7; }
+.pas li, .liste li { margin: 0 0 10px; padding-left: 4px; }
+.pas li::marker { font-family: var(--main); font-size: 22px; color: var(--lilas); font-weight: 600; }
+.liste li::marker { color: var(--or); }
+.liste.non { list-style: none; padding-left: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
+@media (max-width: 559px) { .liste.non { grid-template-columns: 1fr; } }
+.liste.non li { display: flex; align-items: center; gap: 10px; margin: 0; }
+.liste.non li::before { content: "✕"; flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 900; color: #fff; background: var(--rose); }
+.encadre { margin-top: 16px; padding: 16px 20px; border-radius: 12px; background: var(--or-pale); border-left: 4px solid var(--or); font-size: 16px; line-height: 1.65; }
+.bloc .signature { margin-top: 14px; }
+.en-bref { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 0 0 24px; padding: 0; list-style: none; }
+@media (max-width: 819px) { .en-bref { grid-template-columns: 1fr; } }
+.en-bref li { display: flex; gap: 12px; padding: 18px 20px; border-radius: 14px; background: var(--carte); border: var(--bord); box-shadow: var(--ombre); font-weight: 700; font-size: 15.5px; line-height: 1.5; }
+.en-bref .rond-couleur { flex: none; width: 14px; height: 14px; margin-top: 5px; border-radius: 50%; background: var(--c); }
+.sommaire { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; }
+.sommaire a { display: inline-block; padding: 7px 14px; border-radius: 999px; font-family: var(--main); font-size: 19px; color: var(--lilas); background: #fff; border: 1.5px solid var(--lilas); text-decoration: none; }
+.sommaire a:hover { background: var(--lilas); color: #fff; }
+.tableau { width: 100%; border-collapse: collapse; margin: 6px 0 16px; font-size: 15.5px; }
+.tableau th, .tableau td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(59, 47, 74, 0.12); vertical-align: top; }
+.tableau th { font-family: var(--main); font-size: 20px; font-weight: 600; color: var(--or); }
+
+
+/* ---------- Retours d'Audrey du 22 octobre 2026 au soir ---------- */
+/* 1. l'ouverture au soleil */
+.nuit .fond { background: #0e0c16 url("images/jeu-soleil-ouverture.webp") 30% 70% / cover no-repeat; } /* capture Unity 3840 px, sans interface */
+.nuit .voile { background: linear-gradient(180deg, rgba(14, 12, 22, 0.25) 0%, rgba(14, 12, 22, 0.05) 30%, rgba(14, 12, 22, 0.72) 68%, rgba(14, 12, 22, 0.95) 100%); }
+/* 2. plus de cursive pour « L'Astrée » */
+.nuit h1 { font-family: var(--titres); font-weight: 500; font-size: clamp(66px, 9vw, 128px); line-height: 1; letter-spacing: -2px; margin-left: -4px; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6); }
+.nuit .avec-glow { margin-left: 6px; }
+.marque .nom { font-family: var(--titres); font-weight: 600; font-size: 25px; letter-spacing: 0.3px; text-shadow: none; }
+.bas-de-page .nom { font-family: var(--titres); font-weight: 600; font-size: 19px; }
+@media (max-width: 420px) { .marque .nom { font-size: 22px; } }
+/* 4. et 5. moins de vide sur les côtés, les titres sur une ligne */
+main, .nuit .contenu, .pied .dedans { max-width: 1400px; }
+.entete-section { max-width: 1000px; }
+h2 { font-size: clamp(32px, 4vw, 46px); }
+.concept { max-width: 1120px; }
+.deux-colonnes, .derriere, .palettes, .notes { max-width: 1120px; margin-left: auto; margin-right: auto; }
+.notes { margin-top: 26px; }
+/* 6. l'étiquette ne cache plus Glow */
+.age figcaption, .histoire figcaption { right: auto; bottom: auto; left: 10px; top: 10px; }
+/* 8. les tuiles météo comme dans le jeu : verre sombre, liseré lilas */
+.icones-meteo li { background: rgba(24, 18, 44, 0.84); border: 2px solid #b89cf0; color: #fff; border-radius: 18px; box-shadow: 0 0 18px -6px rgba(184, 156, 240, 0.9), var(--ombre); }
+.icones-meteo .interrogation { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 2px; font-family: var(--main); font-weight: 700; font-size: 54px; line-height: 1; color: var(--or-vif); text-shadow: 0 0 16px rgba(242, 198, 106, 0.8); }
+.meteos .interrogation { display: inline-grid; place-items: center; width: 28px; height: 28px; font-family: var(--main); font-weight: 700; font-size: 26px; color: var(--or); }
+.meteos figure.mystere { grid-column: 1 / -1; padding-bottom: 12px; }
+.meteos figure.mystere figcaption { position: static; margin-top: 10px; flex-wrap: wrap; }
+.meteos figure.mystere > img { aspect-ratio: 16 / 6; }
+/* 10. la boucle est un cercle, avec des flèches */
+@media (min-width: 900px) {
+  .cercle { position: relative; width: 860px; max-width: 100%; aspect-ratio: 1 / 1; margin: 0 auto; }
+  .cercle .anneau { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+  .cercle .coeur { display: block; position: absolute; left: 50%; top: 50%; width: 180px; height: 180px; transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden; border: 8px solid #fff; box-shadow: 0 0 60px -8px rgba(242, 198, 106, 0.9), var(--ombre); }
+  .cercle .coeur img { width: 100%; height: 100%; object-fit: cover; }
+  .cercle .boucle { position: absolute; inset: 0; display: block; margin: 0; }
+  .cercle .boucle li { position: absolute; width: 230px; padding: 18px 18px 16px; }
+  .cercle .boucle .numero { width: 38px; height: 38px; font-size: 23px; margin-bottom: 8px; }
+  .cercle .boucle h3 { font-size: 19px; }
+  .cercle .boucle p { font-size: 14px; line-height: 1.45; }
+  .cercle .pas-1 { left: 36.63%; top: 6.74%; }
+  .cercle .pas-2 { left: 66.84%; top: 24.19%; }
+  .cercle .pas-3 { left: 66.84%; top: 59.07%; }
+  .cercle .pas-4 { left: 36.63%; top: 76.51%; }
+  .cercle .pas-5 { left: 6.42%; top: 59.07%; }
+  .cercle .pas-6 { left: 6.42%; top: 24.19%; }
+}
+@media (max-width: 899px) {
+  .boucle { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; gap: 34px; }
+  .boucle li { position: relative; }
+  .boucle li:not(:last-child)::after { content: ""; position: absolute; left: 50%; bottom: -26px; width: 14px; height: 14px; border-right: 2.5px solid var(--lilas); border-bottom: 2.5px solid var(--lilas); transform: translateX(-50%) rotate(45deg); }
+}
+/* 12. le pied : une image du jeu, voilée de violet */
+.pied { overflow: hidden; }
+.pied .fond { position: absolute; inset: 0; background: url("images/jeu-pied.webp") 50% 60% / cover no-repeat; }
+.pied .voile { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(48, 36, 70, 0.86), rgba(30, 22, 46, 0.95)); }
+.pied .dedans { position: relative; }
+
+
+/* ---------- Retours d'Audrey du 22 octobre 2026, deuxième tournée ---------- */
+/* 1. Glow plus grand */
+.orbe { width: min(480px, 86vw); }
+.orbe .rond img, .orbe .rond video { transform: scale(1.18); }
+@media (min-width: 820px) { .deux-colonnes { grid-template-columns: 1fr 1.1fr; } } /* sur téléphone, une seule colonne : la règle sans media query forçait deux colonnes et élargissait la page */
+/* 2. le titre comme dans le jeu : la police du jeu, blanc, une lumière qui passe et qui pulse */
+.nuit h1 { font-family: var(--logo); font-weight: 400; font-size: clamp(96px, 14vw, 190px); line-height: 0.9; letter-spacing: 0; margin-left: -8px; text-shadow: none;
+  background: linear-gradient(100deg, #fff 0%, #fff 44%, #fff3c4 50%, #fff 56%, #fff 100%); background-size: 320% 100%; background-position: 120% 0;
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  animation: reflet 8s linear infinite, pulsation 4.5s ease-in-out infinite; }
+@keyframes reflet { 0% { background-position: 120% 0; } 45% { background-position: -120% 0; } 100% { background-position: -120% 0; } }
+@keyframes pulsation { 0%, 100% { filter: drop-shadow(0 0 14px rgba(242, 198, 106, 0.45)); } 50% { filter: drop-shadow(0 0 34px rgba(242, 198, 106, 0.95)); } }
+.nuit .avec-glow { margin-left: 50px; }
+@media (max-width: 640px) { .nuit .avec-glow { margin-left: 24px; } }
+/* 5. Glow plus gros au centre de la boucle */
+@media (min-width: 900px) {
+  .cercle .coeur { width: 270px; height: 270px; }
+  .cercle .coeur img { object-position: 50% 42%; }
+}
+/* 7. le moment avec Glow, sous le Carnet */
+@media (min-width: 900px) { .element.moment { grid-column: 2; } }
+/* 8. la photo d'Audrey */
+.derriere .portrait { transform: rotate(-1.5deg); padding-bottom: 10px; }
+.derriere .portrait img { aspect-ratio: 6 / 7; object-position: 50% 20%; }
+.derriere .credit { margin: 10px 0 0; font-family: var(--main); font-size: 19px; color: var(--encre-doux); text-align: right; }
+
+
+/* ---------- Retours d'Audrey du 22 octobre 2026, troisième tournée ---------- */
+/* 1. l'enfant et Glow à droite, le côté du texte assombri, le surtitre lisible */
+.nuit .fond { background-size: auto 125%; background-position: calc(50% + 270px) 70%; } /* calé sur le centre de l'écran : l'enfant et Glow restent à droite du texte, quelle que soit la largeur */
+@media (min-width: 1800px) { .nuit .fond { background-size: auto 140%; } }
+@media (min-width: 2100px) { .nuit .fond { background-size: auto 165%; } }
+@media (min-width: 2600px) { .nuit .fond { background-size: auto 200%; } }
+@media (max-width: 640px) { .nuit .fond { background-size: cover; background-position: 55% 70%; } }
+.nuit .voile { background:
+  linear-gradient(90deg, rgba(14, 12, 22, 0.62) 0%, rgba(14, 12, 22, 0.35) 38%, rgba(14, 12, 22, 0) 62%),
+  linear-gradient(180deg, rgba(14, 12, 22, 0.3) 0%, rgba(14, 12, 22, 0.05) 30%, rgba(14, 12, 22, 0.72) 68%, rgba(14, 12, 22, 0.95) 100%); }
+.nuit .surtitre { font-size: 30px; font-weight: 600; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95), 0 0 22px rgba(0, 0, 0, 0.9); }
+/* 3. Glow : le haut de sa tête se voit */
+@media (min-width: 900px) { .cercle .coeur img { object-position: 50% 8%; } }
+.orbe .rond img, .orbe .rond video { transform: scale(1.1) translateY(3%); }
+/* 4. la photo d'Audrey, visage au centre */
+.derriere .portrait img { object-position: 50% 30%; }
+
+
+/* le pied : l'enfant et Glow en entier */
+.pied .fond { background: url("images/jeu-pied-large.webp") 50% 66% / cover no-repeat; } /* les têtes restent visibles sur les grands écrans */
+.pied .voile { background: linear-gradient(180deg, rgba(48, 36, 70, 0.78), rgba(30, 22, 46, 0.92)); }
+
+/* filet : la page ne s'élargit jamais au-delà de l'écran */
+html { overflow-x: hidden; }
+
+/* ---------- 23 octobre 2026 : sur téléphone, l'enfant et Glow au-dessus du texte ---------- */
+@media (max-width: 640px) {
+  .nuit { display: block; min-height: 0; padding-top: 118px; }
+  .nuit .fond { position: relative; inset: auto; height: 46vh; min-height: 300px; max-height: 420px; background-size: cover; background-position: 52% 62%; }
+  .nuit .voile { position: absolute; left: 0; right: 0; top: 118px; height: 46vh; min-height: 300px; max-height: 420px; bottom: auto;
+    background: linear-gradient(180deg, rgba(14, 12, 22, 0.25) 0%, rgba(14, 12, 22, 0) 35%, rgba(14, 12, 22, 0.1) 70%, rgba(14, 12, 22, 0.98) 100%); }
+  .nuit .contenu { padding: 0 16px 70px; margin-top: -40px; }
+  .nuit h1 { font-size: clamp(80px, 24vw, 110px); }
+  .nuit .accroche { font-size: 21px; }
+}
+
+/* 23 octobre 2026 : sur téléphone, le texte du cahier reste posé sur les lignes, marge de gauche resserrée */
+@media (max-width: 640px) {
+  .concept { padding: 32px 18px 32px 46px; }
+  .concept::before { left: 32px; }
+  .concept .p1, .concept .p2 { font-size: 17px; line-height: 38px; }
+  .concept h2 { font-size: 30px; }
+}
+
+/* ---------- 23 octobre 2026 : Glow sur un bloc de couleur, plus de rond (« là il fait enfermé ») ---------- */
+.deux-colonnes { background: linear-gradient(160deg, #fbefcf, #f3e3bd); border-radius: 28px; padding: 40px 48px; box-shadow: var(--ombre); }
+.orbe { width: min(380px, 80vw); }
+.orbe .rond { border-radius: 0; overflow: visible; background: transparent; border: 0; box-shadow: none; }
+.orbe .rond video { display: none; }
+.orbe .rond .glow-affiche { display: block; content: url("images/glow-detoure.webp"); object-fit: contain; transform: none; filter: drop-shadow(0 24px 30px rgba(120, 80, 0, 0.35)); }
+.orbe .halo { inset: 4%; background: radial-gradient(circle, rgba(255, 236, 170, 0.95), rgba(242, 198, 106, 0.35) 55%, transparent 72%); }
+.texte-glow .citation { color: #8a5a00; }
+@media (max-width: 640px) { .deux-colonnes { padding: 28px 20px; border-radius: 22px; } .orbe { width: min(300px, 76vw); } }
+
+/* 23 octobre 2026 : « en fait je l'aurais laissé sur un fond noir » — le bloc de Glow devient nuit, Glow lumineux dessus */
+.deux-colonnes { background: radial-gradient(600px 420px at 28% 50%, #2a2238, var(--nuit) 70%); color: var(--nuit-texte); }
+.texte-glow h2 { color: #fff; }
+.texte-glow .p1 { color: var(--nuit-doux); }
+.texte-glow .citation { color: var(--or-vif); }
+.texte-glow .surtitre { color: var(--or-vif); }
+.orbe .halo { background: radial-gradient(circle, rgba(255, 230, 150, 0.55), rgba(242, 198, 106, 0.22) 50%, transparent 72%); }
+.orbe .rond .glow-affiche { filter: drop-shadow(0 0 40px rgba(255, 220, 130, 0.55)); }
+
+/* 23 octobre 2026 : « il faut qu'il s'anime » — la vidéo de la danse revient (son fond sombre se fond dans le bloc noir) */
+.orbe .rond { position: absolute; inset: 0; overflow: visible; }
+.orbe .rond video { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, rgba(0, 0, 0, 0.6) 64%, transparent 74%); mask-image: radial-gradient(circle at 50% 50%, #000 52%, rgba(0, 0, 0, 0.6) 64%, transparent 74%);
+  filter: drop-shadow(0 0 30px rgba(255, 220, 130, 0.45)); }
+.orbe .rond .glow-affiche { display: none; }
+@media (prefers-reduced-motion: reduce) { .orbe .rond video { display: none; } .orbe .rond .glow-affiche { display: block !important; } }
+
+/* 23 octobre 2026 : sur téléphone, les cartes des âges en colonne, grande image au-dessus (« Bientôt dans le jeu » débordait) */
+@media (max-width: 559px) {
+  .age { flex-direction: column; align-items: stretch; }
+  .age figure { width: auto; aspect-ratio: 16 / 10; margin: 0; border-radius: 0; }
+  .age figure.en-preparation span { font-size: 26px; text-align: center; padding: 0 20px; }
+  .age figcaption { display: block; }
+  .age .corps { padding: 16px 20px 20px; }
+}
+
+/* 23 octobre 2026 : les tuiles météo toutes de la même taille (« Arc-en-ciel » passait sur deux lignes au téléphone) */
+.icones-meteo li { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
+.icones-meteo img, .icones-meteo .interrogation { width: 64px; height: 64px; object-fit: contain; margin: 0; }
+@media (max-width: 640px) {
+  .icones-meteo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .icones-meteo li { width: auto; aspect-ratio: 1 / 1; padding: 8px 4px; font-size: 18px; }
+  .icones-meteo img, .icones-meteo .interrogation { width: 52px; height: 52px; }
+  .icones-meteo .interrogation { font-size: 46px; }
+}
+
+/* 23 octobre 2026 : la carte des statistiques est retirée de « Pour les familles » ; les deux restantes côte à côte */
+@media (min-width: 900px) { .familles { grid-template-columns: repeat(2, 1fr); max-width: 900px; margin-left: auto; margin-right: auto; } }
+
+/* ---------- 23 octobre 2026 : plus d'apparition au défilement (tout en bas, les blocs restaient voilés) ---------- */
+.apparait { animation: none !important; opacity: 1 !important; transform: none !important; }
+/* la phrase sur les statistiques, dans « Derrière L'Astrée » */
+.derriere .p3 { font-size: 16px; line-height: 1.7; color: var(--encre-doux); margin: 0 0 24px; padding: 14px 18px; background: var(--or-pale); border-radius: 12px; }
+.derriere .p3 a { color: var(--lilas); font-weight: 700; }
+/* sur téléphone, la photo plus petite, centrée, après le texte */
+@media (max-width: 819px) {
+  .derriere .portrait { order: 2; width: min(260px, 70vw); margin: 0 auto; transform: rotate(-1.5deg); }
+}
+
+/* 23 octobre 2026 : la phrase sur les émotions qui passent pour l'instant par une quête, dans « Aujourd'hui » */
+.phrase-quetes { max-width: 720px; margin: 30px auto 0; text-align: center; font-family: var(--main); font-size: 23px; line-height: 1.4; color: var(--lilas); }
+
+/* 23 octobre 2026 : « Pour les familles » revue — trois cartes de nouveau (gratuit pendant le test, pas de publicité pour les enfants, alerte douce) */
+@media (min-width: 900px) { .familles { grid-template-columns: repeat(3, 1fr); max-width: none; } }
+
+/* 23 octobre 2026 : pas de petit mot seul en bout ou en fin de ligne (« Il », « le ») */
+p, li, h2, h3 { text-wrap: pretty; }
+
+/* 23 octobre 2026 : sur iPhone (Safari), l'image d'une carte ne remplissait pas sa case (bande lilas au-dessus) ;
+   l'image est posée sur toute la case, quelle que soit la façon dont le navigateur calcule sa hauteur */
+.age figure, .histoire figure { position: relative; display: block; }
+.age figure img, .histoire figure img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.age figure figcaption, .histoire figure figcaption { z-index: 1; }
+.age figure.en-preparation { display: grid; }
+
+/* 23 octobre 2026 : sur téléphone, l'étiquette « à venir » passe au-dessus du titre (elle tombait dessous, décalée) */
+@media (max-width: 640px) {
+  h3:has(.mention-a-venir) { display: flex; flex-direction: column-reverse; align-items: flex-start; gap: 6px; }
+  h3 .mention-a-venir { margin-left: 0; }
+}
+@media (max-width: 640px) {
+  .element:has(.mention-a-venir) .losange { margin-top: 34px; }
+  .famille:has(.mention-a-venir) .rond-couleur { margin-top: 36px; }
+}
+
+/* 23 octobre 2026 : sur téléphone, la photo d'Audrey devient un portrait rond à côté de sa signature
+   (seule en bas de la section, elle flottait) ; sur ordinateur, la grande photo reste à gauche du texte */
+.signature-bloc { display: flex; align-items: center; gap: 14px; }
+.signature-photo, .credit-telephone { display: none; }
+@media (max-width: 819px) {
+  .derriere .portrait { display: none; }
+  .signature-photo { display: block; flex: none; width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: var(--ombre); }
+  .credit-telephone { display: block; margin: 2px 0 0; font-family: var(--main); font-size: 16px; color: var(--gris); }
+  .signature-bloc .signature { font-size: 24px; line-height: 1.2; }
+}
+
+/* 23 octobre 2026 : le titre « L'Astrée » pulse vraiment (halo doré qui respire et léger gonflement) */
+@keyframes pulsationTitre { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(242, 198, 106, 0.35)); } 50% { transform: scale(1.035); filter: drop-shadow(0 0 30px rgba(242, 198, 106, 1)); } }
+.nuit h1 { transform-origin: left center; animation: reflet 8s linear infinite, pulsationTitre 3.5s ease-in-out infinite; }
+/* l'image des seniors : la tête de la dame reste dans le cadre */
+.age.seniors figure img { object-position: 50% 0%; }
+/* « Derrière L'Astrée » sans photo : le texte seul, centré */
+.derriere { display: block; max-width: 760px; margin: 0 auto; }
+.derriere .signature-bloc { display: block; }
